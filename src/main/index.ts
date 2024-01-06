@@ -2,6 +2,51 @@ import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { MongoClient } from 'mongodb'
+
+const connectToMongodb = async (sessionName: string): Promise<void> => {
+  try {
+    const resourceClient = new MongoClient(
+      'mongodb://localhost:27017/?maxPoolSize=500&w=majority&directConnection=true'
+    )
+    await resourceClient.connect()
+    const db = resourceClient.db(sessionName)
+    const collection = db.collection('Resource')
+
+    const cursor = collection.find({})
+    for await (const doc of cursor) {
+      console.log('ResourceDoc: ', doc)
+    }
+
+    const resourceChangeStream = collection.watch()
+    resourceChangeStream.on('change', (change) => {
+      console.log('ResourceChangeStream: ', change)
+    })
+  } catch (error) {
+    console.error('Fehler Mongo DB ResourceStream: ', error)
+  }
+
+  try {
+    const sceneClient = new MongoClient(
+      'mongodb://localhost:27017/?maxPoolSize=500&w=majority&directConnection=true'
+    )
+    await sceneClient.connect()
+    const db = sceneClient.db(sessionName)
+    const collection = db.collection('Scene')
+
+    const cursor = collection.find({})
+    for await (const doc of cursor) {
+      console.log('SceneDoc: ', doc)
+    }
+
+    const resourceChangeStream = collection.watch()
+    resourceChangeStream.on('change', (change) => {
+      console.log('SceneChangeStream: ', change)
+    })
+  } catch (error) {
+    console.error('Fehler Mongo DB SceneStream: ', error)
+  }
+}
 
 function createWindow(): void {
   // Create the browser window.
@@ -56,6 +101,18 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+
+  let actualSessionName: string
+
+  fetch('http://localhost:8000/admin/get-actual-session')
+    .then((response) => response.text())
+    .then((data) => {
+      actualSessionName = data
+    })
+    .then(() => connectToMongodb(actualSessionName))
+    .catch((error) => {
+      console.error('Error:', error)
+    })
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
