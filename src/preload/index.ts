@@ -1,8 +1,15 @@
-import { contextBridge } from 'electron'
+import { IpcRenderer, contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  resource: (
+    callback: (event: Electron.IpcRendererEvent, resourceDoc: object) => void
+  ): IpcRenderer =>
+    ipcRenderer.on('resource', (event, resourceDoc) => callback(event, resourceDoc)),
+  scene: (callback: (event: Electron.IpcRendererEvent, sceneDoc: object) => void): IpcRenderer =>
+    ipcRenderer.on('scene', (event, sceneDoc) => callback(event, sceneDoc))
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

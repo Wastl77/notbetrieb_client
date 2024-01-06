@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { MongoClient } from 'mongodb'
 
-const connectToMongodb = async (sessionName: string): Promise<void> => {
+const connectToMongodb = async (sessionName: string, mainWindow: BrowserWindow): Promise<void> => {
   try {
     const resourceClient = new MongoClient(
       'mongodb://localhost:27017/?maxPoolSize=500&w=majority&directConnection=true'
@@ -16,11 +16,13 @@ const connectToMongodb = async (sessionName: string): Promise<void> => {
     const cursor = collection.find({})
     for await (const doc of cursor) {
       console.log('ResourceDoc: ', doc)
+      mainWindow.webContents.send('resource', doc)
     }
 
     const resourceChangeStream = collection.watch()
     resourceChangeStream.on('change', (change) => {
       console.log('ResourceChangeStream: ', change)
+      mainWindow.webContents.send('resource', change)
     })
   } catch (error) {
     console.error('Fehler Mongo DB ResourceStream: ', error)
@@ -37,18 +39,20 @@ const connectToMongodb = async (sessionName: string): Promise<void> => {
     const cursor = collection.find({})
     for await (const doc of cursor) {
       console.log('SceneDoc: ', doc)
+      mainWindow.webContents.send('scene', doc)
     }
 
     const resourceChangeStream = collection.watch()
     resourceChangeStream.on('change', (change) => {
       console.log('SceneChangeStream: ', change)
+      mainWindow.webContents.send('scene', change)
     })
   } catch (error) {
     console.error('Fehler Mongo DB SceneStream: ', error)
   }
 }
 
-function createWindow(): void {
+function createWindow(): BrowserWindow {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
@@ -78,6 +82,8 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  return mainWindow
 }
 
 // This method will be called when Electron has finished
@@ -94,7 +100,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  createWindow()
+  const mainWindow = createWindow()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
@@ -109,7 +115,7 @@ app.whenReady().then(() => {
     .then((data) => {
       actualSessionName = data
     })
-    .then(() => connectToMongodb(actualSessionName))
+    .then(() => connectToMongodb(actualSessionName, mainWindow))
     .catch((error) => {
       console.error('Error:', error)
     })
