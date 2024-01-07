@@ -1,10 +1,53 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { MongoClient } from 'mongodb'
 
-const connectToMongodb = async (sessionName: string, mainWindow: BrowserWindow): Promise<void> => {
+let actualSessionName: string
+
+const fetchSessionName = async (): Promise<void> =>
+  await fetch('http://localhost:8000/admin/get-actual-session')
+    .then((response) => response.text())
+    .then((data) => {
+      actualSessionName = data
+    })
+    .catch((error) => {
+      console.error('Error:', error)
+    })
+
+const handleGetInitialState = async (): Promise<Record<string, object>> => {
+  const result: Record<string, object> = { resources: {}, scenes: {} }
+
+  try {
+    const client = new MongoClient(
+      'mongodb://localhost:27017/?maxPoolSize=500&w=majority&directConnection=true'
+    )
+    await client.connect()
+    const db = client.db(actualSessionName)
+    const resourceCollection = db.collection('Resource')
+
+    const resourceCursor = resourceCollection.find({})
+    for await (const doc of resourceCursor) {
+      result.resources[doc.callsign] = doc
+    }
+
+    const sceneCollection = db.collection('Scene')
+
+    const sceneCursor = sceneCollection.find({})
+    for await (const doc of sceneCursor) {
+      result.scenes[doc.sceneNumber] = doc
+    }
+  } catch (error) {
+    console.error('Fehler Mongo DB get initial state: ', error)
+  }
+  return result
+}
+
+const registerChangeStream = async (
+  sessionName: string,
+  mainWindow: BrowserWindow
+): Promise<void> => {
   try {
     const resourceClient = new MongoClient(
       'mongodb://localhost:27017/?maxPoolSize=500&w=majority&directConnection=true'
@@ -13,11 +56,11 @@ const connectToMongodb = async (sessionName: string, mainWindow: BrowserWindow):
     const db = resourceClient.db(sessionName)
     const collection = db.collection('Resource')
 
-    const cursor = collection.find({})
-    for await (const doc of cursor) {
-      console.log('ResourceDoc: ', doc)
-      mainWindow.webContents.send('resource', doc)
-    }
+    // const cursor = collection.find({})
+    // for await (const doc of cursor) {
+    //   console.log('ResourceDoc: ', doc)
+    //   mainWindow.webContents.send('resource', doc)
+    // }
 
     const resourceChangeStream = collection.watch()
     resourceChangeStream.on('change', (change) => {
@@ -36,11 +79,11 @@ const connectToMongodb = async (sessionName: string, mainWindow: BrowserWindow):
     const db = sceneClient.db(sessionName)
     const collection = db.collection('Scene')
 
-    const cursor = collection.find({})
-    for await (const doc of cursor) {
-      console.log('SceneDoc: ', doc)
-      mainWindow.webContents.send('scene', doc)
-    }
+    // const cursor = collection.find({})
+    // for await (const doc of cursor) {
+    //   console.log('SceneDoc: ', doc)
+    //   mainWindow.webContents.send('scene', doc)
+    // }
 
     const resourceChangeStream = collection.watch()
     resourceChangeStream.on('change', (change) => {
@@ -89,7 +132,10 @@ function createWindow(): BrowserWindow {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  await fetchSessionName()
+  ipcMain.handle('getInitialState', handleGetInitialState)
+
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
@@ -108,17 +154,7 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 
-  let actualSessionName: string
-
-  fetch('http://localhost:8000/admin/get-actual-session')
-    .then((response) => response.text())
-    .then((data) => {
-      actualSessionName = data
-    })
-    .then(() => connectToMongodb(actualSessionName, mainWindow))
-    .catch((error) => {
-      console.error('Error:', error)
-    })
+  registerChangeStream(actualSessionName, mainWindow)
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

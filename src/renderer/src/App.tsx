@@ -3,8 +3,15 @@ import { useEffect } from 'react'
 
 function App(): JSX.Element {
   useEffect(() => {
+    ;(async (): Promise<void> => {
+      //@ts-ignore dont know how to fix
+      const state = await window.api.getInitialState()
+      console.log(state)
+    })()
+  }, [])
+
+  useEffect(() => {
     //@ts-ignore dont know how to fix
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     window.api.resource((event: any, resourceDoc: any) => {
       console.log('useEffect', event, resourceDoc)
     })

@@ -8,7 +8,8 @@ const api = {
   ): IpcRenderer =>
     ipcRenderer.on('resource', (event, resourceDoc) => callback(event, resourceDoc)),
   scene: (callback: (event: Electron.IpcRendererEvent, sceneDoc: object) => void): IpcRenderer =>
-    ipcRenderer.on('scene', (event, sceneDoc) => callback(event, sceneDoc))
+    ipcRenderer.on('scene', (event, sceneDoc) => callback(event, sceneDoc)),
+  getInitialState: (): Promise<any> => ipcRenderer.invoke('getInitialState')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
