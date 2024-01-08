@@ -1,4 +1,4 @@
-import { IpcRenderer, contextBridge, ipcRenderer } from 'electron'
+import { IpcRenderer, IpcRendererEvent, contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { ChangeStreamUpdateDocument, ChangeStreamInsertDocument } from 'mongodb'
 import { Scene, Resource } from '../main/types'
@@ -7,12 +7,23 @@ import { Api } from '../main/types'
 // Custom APIs for renderer
 const api: Api = {
   resource: (callback: (resourceDoc: ChangeStreamUpdateDocument<Resource>) => void): IpcRenderer =>
-    ipcRenderer.on('resource', (_, resourceDoc) => callback(resourceDoc)),
+    ipcRenderer.on(
+      'resource',
+      (_: IpcRendererEvent, resourceDoc: ChangeStreamUpdateDocument<Resource>) =>
+        callback(resourceDoc)
+    ),
   scene: (
     callback: (
       sceneDoc: ChangeStreamUpdateDocument<Scene> | ChangeStreamInsertDocument<Scene>
     ) => void
-  ): IpcRenderer => ipcRenderer.on('scene', (_, sceneDoc) => callback(sceneDoc)),
+  ): IpcRenderer =>
+    ipcRenderer.on(
+      'scene',
+      (
+        _: IpcRendererEvent,
+        sceneDoc: ChangeStreamUpdateDocument<Scene> | ChangeStreamInsertDocument<Scene>
+      ) => callback(sceneDoc)
+    ),
   getInitialState: (): Promise<{
     resources: Record<string, Resource>
     scenes: Record<string, Scene>
