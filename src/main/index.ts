@@ -3,6 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { MongoClient } from 'mongodb'
+import { Scene, Resource } from './types'
 
 let actualSessionName: string
 
@@ -16,8 +17,14 @@ const fetchSessionName = async (): Promise<void> =>
       console.error('Error:', error)
     })
 
-const handleGetInitialState = async (): Promise<Record<string, object>> => {
-  const result: Record<string, object> = { resources: {}, scenes: {} }
+const handleGetInitialState = async (): Promise<{
+  resources: Record<string, Resource>
+  scenes: Record<string, Scene>
+}> => {
+  const result: {
+    resources: Record<string, Resource>
+    scenes: Record<string, Scene>
+  } = { resources: {}, scenes: {} }
 
   try {
     const client = new MongoClient(
@@ -27,16 +34,18 @@ const handleGetInitialState = async (): Promise<Record<string, object>> => {
     const db = client.db(actualSessionName)
     const resourceCollection = db.collection('Resource')
 
-    const resourceCursor = resourceCollection.find({})
+    const resourceCursor = resourceCollection.find<Resource>({})
     for await (const doc of resourceCursor) {
+      doc.id = doc._id.toString()
       result.resources[doc.callsign] = doc
     }
 
     const sceneCollection = db.collection('Scene')
 
-    const sceneCursor = sceneCollection.find({})
+    const sceneCursor = sceneCollection.find<Scene>({})
     for await (const doc of sceneCursor) {
-      result.scenes[doc.sceneNumber] = doc
+      doc.id = doc._id.toString()
+      result.scenes[doc.sceneNumber!] = doc
     }
   } catch (error) {
     console.error('Fehler Mongo DB get initial state: ', error)
@@ -56,13 +65,7 @@ const registerChangeStream = async (
     const db = resourceClient.db(sessionName)
     const collection = db.collection('Resource')
 
-    // const cursor = collection.find({})
-    // for await (const doc of cursor) {
-    //   console.log('ResourceDoc: ', doc)
-    //   mainWindow.webContents.send('resource', doc)
-    // }
-
-    const resourceChangeStream = collection.watch()
+    const resourceChangeStream = collection.watch<Resource>([], { fullDocument: 'updateLookup' })
     resourceChangeStream.on('change', (change) => {
       console.log('ResourceChangeStream: ', change)
       mainWindow.webContents.send('resource', change)
@@ -79,13 +82,7 @@ const registerChangeStream = async (
     const db = sceneClient.db(sessionName)
     const collection = db.collection('Scene')
 
-    // const cursor = collection.find({})
-    // for await (const doc of cursor) {
-    //   console.log('SceneDoc: ', doc)
-    //   mainWindow.webContents.send('scene', doc)
-    // }
-
-    const resourceChangeStream = collection.watch()
+    const resourceChangeStream = collection.watch<Scene>([], { fullDocument: 'updateLookup' })
     resourceChangeStream.on('change', (change) => {
       console.log('SceneChangeStream: ', change)
       mainWindow.webContents.send('scene', change)
@@ -98,8 +95,9 @@ const registerChangeStream = async (
 function createWindow(): BrowserWindow {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    // width: 900,
+    // height: 670,
+    fullscreen: true,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
