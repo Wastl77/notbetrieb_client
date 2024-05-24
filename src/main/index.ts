@@ -26,10 +26,11 @@ const handleGetInitialState = async (): Promise<{
     scenes: Record<string, Scene>
   } = { resources: {}, scenes: {} }
 
+  const client = new MongoClient(
+    'mongodb://localhost:27017/?maxPoolSize=500&w=majority&directConnection=true'
+  )
+
   try {
-    const client = new MongoClient(
-      'mongodb://localhost:27017/?maxPoolSize=500&w=majority&directConnection=true'
-    )
     await client.connect()
     const db = client.db(actualSessionName)
     const resourceCollection = db.collection('Resource')
@@ -49,6 +50,8 @@ const handleGetInitialState = async (): Promise<{
     }
   } catch (error) {
     console.error('Fehler Mongo DB get initial state: ', error)
+  } finally {
+    client.close() //!Test!!!
   }
   return result
 }

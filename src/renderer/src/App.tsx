@@ -1,4 +1,4 @@
-import Versions from './components/Versions'
+import IncidentForm from './components/IncidentForm'
 import { useEffect, useState } from 'react'
 import { Scene, Resource, Api } from '../../main/types'
 
@@ -39,31 +39,7 @@ function App(): JSX.Element {
     })
   })
 
-  return (
-    <div className="container">
-      <Versions></Versions>
-      <div>
-        {Object.entries(resources).map((res) => (
-          <div key={res[0]}>
-            <p>Callsign: {res[0]}</p>
-            <br />
-            <p>State: {JSON.stringify(res[1])}</p>
-            <br />
-          </div>
-        ))}
-      </div>
-      <div>
-        {Object.entries(scenes).map((scene) => (
-          <div key={scene[0]}>
-            <p>SceneNumber: {scene[0]}</p>
-            <br />
-            <p>State: {JSON.stringify(scene[1])}</p>
-            <br />
-          </div>
-        ))}
-      </div>
-    </div>
-  )
+  return <IncidentForm></IncidentForm>
 }
 
 export default App
