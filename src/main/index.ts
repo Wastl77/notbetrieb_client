@@ -134,8 +134,8 @@ function createWindow(): BrowserWindow {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
-  await fetchSessionName()
-  ipcMain.handle('getInitialState', handleGetInitialState)
+  // await fetchSessionName()
+  // ipcMain.handle('getInitialState', handleGetInitialState)
 
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
@@ -155,7 +155,7 @@ app.whenReady().then(async () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 
-  registerChangeStream(actualSessionName, mainWindow)
+  // registerChangeStream(actualSessionName, mainWindow)
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

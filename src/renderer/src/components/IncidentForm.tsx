@@ -35,6 +35,22 @@ function IncidentForm(): JSX.Element {
           Notfallverlegung
         </p>
       </nav>
+      <div
+        className={
+          activeNav === 'medicalTransport' || activeNav === 'emergencyRelocation'
+            ? 'incident-form wide'
+            : 'incident-form'
+        }
+      >
+        <div className="row1"></div>
+        <div
+          className={
+            activeNav === 'medicalTransport' || activeNav === 'emergencyRelocation'
+              ? 'row2'
+              : 'hidden'
+          }
+        ></div>
+      </div>
     </div>
   )
 }

@@ -44,3 +44,22 @@ body {
   padding-bottom: 3px;
   transition: border 0.3s ease;
 }
+
+.incident-form.wide {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+.row1 {
+  background-color: green;
+  height: 100vh;
+}
+
+.row2 {
+  background-color: blue;
+  height: 100vh;
+}
+
+.hidden {
+  display: none;
+}
