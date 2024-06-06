@@ -1,0 +1,55 @@
+.container {
+  height: calc(100vh - 2 * 10px);
+  width: calc(100vw / 3);
+  min-width: 480px;
+  max-width: 800px;
+  margin: 10px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  background-color: #ccd0cd;
+  transition: width 0.3s ease
+}
+
+.container.wide {
+  width: calc((100vw / 3)*2);
+}
+
+.incidentNav {
+  display: flex;
+  height: 45.5px;
+}
+
+.incidentNav p {
+  margin: 10px;
+  font-weight: bold;
+}
+
+.incidentNav p:hover {
+  cursor: pointer;
+}
+
+.activeNav {
+  border-bottom: 4px solid #1b3259;
+  border-radius: 1px;
+  padding-bottom: 3px;
+  transition: border 0.3s ease;
+}
+
+.incidentForm.wide {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+.row1 {
+  background-color: green;
+  height: 100vh;
+}
+
+.row2 {
+  background-color: blue;
+  height: 100vh;
+}
+
+.hidden {
+  display: none;
+}

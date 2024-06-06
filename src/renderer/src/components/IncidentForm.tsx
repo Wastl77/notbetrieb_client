@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import styles from './IncidentForm.module.css'
 
 function IncidentForm(): JSX.Element {
   const [activeNav, setActiveNav] = useState('incident')
@@ -11,25 +12,25 @@ function IncidentForm(): JSX.Element {
     <div
       className={
         activeNav === 'medicalTransport' || activeNav === 'emergencyRelocation'
-          ? 'container wide'
-          : 'container'
+          ? `${styles.container} ${styles.wide}`
+          : styles.container
       }
     >
-      <nav className="incident-nav">
+      <nav className={styles.incidentNav}>
         <p
-          className={activeNav === 'incident' ? 'activeNav' : ''}
+          className={activeNav === 'incident' ? styles.activeNav : ''}
           onClick={() => handleNavClick('incident')}
         >
           Einsatz aufnehmen
         </p>
         <p
-          className={activeNav === 'medicalTransport' ? 'activeNav' : ''}
+          className={activeNav === 'medicalTransport' ? styles.activeNav : ''}
           onClick={() => handleNavClick('medicalTransport')}
         >
           Krankentransport
         </p>
         <p
-          className={activeNav === 'emergencyRelocation' ? 'activeNav' : ''}
+          className={activeNav === 'emergencyRelocation' ? styles.activeNav : ''}
           onClick={() => handleNavClick('emergencyRelocation')}
         >
           Notfallverlegung
@@ -38,16 +39,16 @@ function IncidentForm(): JSX.Element {
       <div
         className={
           activeNav === 'medicalTransport' || activeNav === 'emergencyRelocation'
-            ? 'incident-form wide'
-            : 'incident-form'
+            ? `${styles.incidentForm} ${styles.wide}`
+            : styles.incidentForm
         }
       >
-        <div className="row1"></div>
+        <div className={styles.row1}></div>
         <div
           className={
             activeNav === 'medicalTransport' || activeNav === 'emergencyRelocation'
-              ? 'row2'
-              : 'hidden'
+              ? styles.row2
+              : styles.hidden
           }
         ></div>
       </div>
