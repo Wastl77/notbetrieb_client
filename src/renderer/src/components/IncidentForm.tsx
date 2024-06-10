@@ -3,6 +3,19 @@ import styles from './IncidentForm.module.css'
 
 function IncidentForm(): JSX.Element {
   const [activeNav, setActiveNav] = useState('incident')
+  const [formIsActive, setFormIsActive] = useState(false)
+
+  console.log({ formIsActive })
+
+  const handleFormClick = (): void => {
+    if (!formIsActive) {
+      setFormIsActive(true)
+    }
+  }
+
+  const handleReset = (): void => {
+    setFormIsActive(false)
+  }
 
   const handleNavClick = (nav: string): void => {
     setActiveNav(nav)
@@ -13,8 +26,11 @@ function IncidentForm(): JSX.Element {
       className={
         activeNav === 'medicalTransport' || activeNav === 'emergencyRelocation'
           ? `${styles.container} ${styles.wide}`
-          : styles.container
+          : formIsActive === true
+            ? styles.container
+            : `${styles.container} ${styles.inactive}`
       }
+      onClick={handleFormClick}
     >
       <nav className={styles.incidentNav}>
         <p
@@ -36,22 +52,22 @@ function IncidentForm(): JSX.Element {
           Notfallverlegung
         </p>
       </nav>
+      <div className={styles.row1}></div>
       <div
         className={
           activeNav === 'medicalTransport' || activeNav === 'emergencyRelocation'
-            ? `${styles.incidentForm} ${styles.wide}`
-            : styles.incidentForm
+            ? styles.row2
+            : styles.hidden
         }
-      >
-        <div className={styles.row1}></div>
-        <div
-          className={
-            activeNav === 'medicalTransport' || activeNav === 'emergencyRelocation'
-              ? styles.row2
-              : styles.hidden
-          }
-        ></div>
+      ></div>
+      <div className={styles.buttonField}>
+        <button className={styles.resetButton} onClick={handleReset}>
+          Verwerfen
+        </button>
+        <button className={styles.submitButton}>Ablegen</button>
       </div>
+      {/* todo: verwerfen button welcher feld wieder dunkel 
+      macht und forminhalte löscht */}
     </div>
   )
 }
