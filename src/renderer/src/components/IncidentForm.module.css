@@ -7,9 +7,9 @@
   /* max-width: 800px; */
   overflow: hidden;
   margin: 10px;
+  border: 5px solid #e9eaeb;
   border-radius: 10px;
-  box-sizing: border-box;
-  background-color: #ccd0cd;
+  background-color: #f5f9f9;
   transition: width 0.3s ease
 }
 
@@ -40,16 +40,62 @@
 }
 
 .activeNav {
-  border-bottom: 4px solid #1b3259;
+  border-bottom: 3px solid #1b3259;
   border-radius: 1px;
   padding-bottom: 3px;
   transition: border 0.3s ease;
 }
 
+.label {
+  display: block;
+  font-weight: bold;
+  padding-bottom: 8px;
+}
+  
 .row1 {
   /* background-color: green; */
   overflow: auto;
+  padding: 10px;
+  }
+
+input, textarea {
+  padding: 5px;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  background-color: #f5f9f9;
+  width: 100%;
+  margin-bottom: 10px;
+  outline: none;
+  font-family: inherit;
+  }
+
+textarea {
+  resize: vertical;
 }
+
+input#street, input#district {
+  width: 80%;
+}
+
+input#houseNumber {
+  width: 18%;
+  margin-left: 2%;
+}
+
+input#zipCode {
+  width: 18%;
+  margin-right: 2%;
+}
+
+input#patientLastname {
+  width: 49%;
+  margin-right: 2%;
+}
+
+input#patientFirstname {
+  width: 49%;
+}
+
 
 .row2 {
   /* background-color: blue; */
@@ -76,10 +122,11 @@
 }
 
 .resetButton {
-  border: 2px solid #716565;
+  border: 1px solid #000000;
   border-radius: 5px;
   padding: 5px;
   margin: 0 calc(5%) 0 calc(5%);
+  background-color: #f5f9f9;
 }
 
 .submitButton {
@@ -87,5 +134,6 @@
   border-radius: 5px;
   padding: 5px;
   margin: 0 calc(5%) 0 calc(5%);
-  background-color: rgb(44, 104, 232);
+  background-color: rgb(81, 128, 230);
+  color: #ffffff;
 }

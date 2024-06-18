@@ -5,8 +5,6 @@ function IncidentForm(): JSX.Element {
   const [activeNav, setActiveNav] = useState('incident')
   const [formIsActive, setFormIsActive] = useState(false)
 
-  console.log({ formIsActive })
-
   const handleFormClick = (): void => {
     if (!formIsActive) {
       setFormIsActive(true)
@@ -52,7 +50,37 @@ function IncidentForm(): JSX.Element {
           Notfallverlegung
         </p>
       </nav>
-      <div className={styles.row1}></div>
+      <div className={styles.row1}>
+        <label className={styles.label} htmlFor="street">
+          Adresse
+        </label>
+        <input type="text" id={styles.street} name="street" placeholder="Straße" />
+        <input type="text" id={styles.houseNumber} name="houseNumber" placeholder="Hnr." />
+        <input type="text" id={styles.zipCode} name="zipCode" placeholder="PLZ" />
+        <input type="text" id={styles.district} name="district" placeholder="Stadtteil" />
+        <input type="text" id={styles.object} name="object" placeholder="Objekt" />
+        <textarea name="hints" id="hints" placeholder="Manuelle Hinweise"></textarea>
+        <label className={styles.label} htmlFor="reporter">
+          Meldender
+        </label>
+        <input type="text" name="reporter" placeholder="Wer meldet" />
+        <input type="text" name="phoneNumber" placeholder="Abweichende Rückrufnummer" />
+        <label className={styles.label} htmlFor="reporter">
+          Patient
+        </label>
+        <input
+          type="text"
+          id={styles.patientLastname}
+          name="patientLastname"
+          placeholder="Nachname"
+        />
+        <input
+          type="text"
+          id={styles.patientFirstname}
+          name="patientFirstname"
+          placeholder="Vorname"
+        />
+      </div>
       <div
         className={
           activeNav === 'medicalTransport' || activeNav === 'emergencyRelocation'
