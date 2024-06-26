@@ -80,6 +80,55 @@ function IncidentForm(): JSX.Element {
           name="patientFirstname"
           placeholder="Vorname"
         />
+        <div className={styles.patientBirthdateContainer}>
+          <input
+            type="text"
+            id={styles.patientBirthdate}
+            name="patientBirthdate"
+            placeholder="Geburtsdatum"
+            onFocus={(e) => (e.target.type = 'date')}
+            onBlur={(e) => (e.target.value === '' ? (e.target.type = 'text') : null)}
+          />
+          <div className={styles.resetCircle}></div>
+        </div>
+        <p id={styles.gender}>Geschlecht:</p>
+        <div className={styles.genderRadioContainer}>
+          <input
+            type="radio"
+            name="gender"
+            id="unknown"
+            value="unknown"
+            checked
+            className={styles.genderRadio}
+          />
+          <label htmlFor="unknown" className={styles.genderLabel}>
+            u
+          </label>
+          <input type="radio" name="gender" id="male" value="male" className={styles.genderRadio} />
+          <label htmlFor="male" className={styles.genderLabel}>
+            m
+          </label>
+          <input
+            type="radio"
+            name="gender"
+            id="female"
+            value="female"
+            className={styles.genderRadio}
+          />
+          <label htmlFor="female" className={styles.genderLabel}>
+            w
+          </label>
+          <input
+            type="radio"
+            name="gender"
+            id="diverse"
+            value="diverse"
+            className={styles.genderRadio}
+          />
+          <label htmlFor="diverse" className={styles.genderLabel}>
+            d
+          </label>
+        </div>
       </div>
       <div
         className={

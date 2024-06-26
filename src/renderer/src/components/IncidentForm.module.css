@@ -96,6 +96,71 @@ input#patientFirstname {
   width: 49%;
 }
 
+.patientBirthdateContainer {
+  position: relative;
+  width: 100%;
+}
+
+input#patientBirthdate {
+  width: 100%;
+  padding-right: 50px;
+  box-sizing: border-box;
+}
+
+.resetCircle {
+  position: absolute;
+  right: 10px;
+  top: calc(50% - 5px);
+  width: 15px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  height: 15px;
+  display: flex;
+  background-color: black;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.resetCircle::before, .resetCircle::after {
+  content: '';
+  width: 60%;
+  position: absolute;
+  background-color: #f5f9f9;
+  height: 10%;
+}
+
+.resetCircle::before {
+  transform: rotate(45deg);
+}
+
+.resetCircle::after {
+  transform: rotate(-45deg);
+}
+
+#gender {
+  font-weight: 300;
+  font-size: smaller;
+  display: inline-block;
+  margin-right: 3%;
+}
+
+.genderRadioContainer {
+  display: inline-block;
+  width: 40%;
+}
+
+.genderRadio {
+  width: auto;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.genderLabel {
+  font-weight: 300;
+  font-size: smaller;
+  margin-right: 5px;;
+}
 
 .row2 {
   /* background-color: blue; */
