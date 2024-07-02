@@ -1,0 +1,27 @@
+.container {
+  position: relative;
+}
+
+.label {
+  display: block;
+  font-weight: bold;
+  padding-bottom: 8px;
+}
+
+.alarmkeywordList {
+  position: absolute;
+  list-style: none;
+  width: 100%;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  top: calc(100% - 11px);
+  display: none;
+}
+
+.alarmkeywordList.show {
+  display: block;
+}
+
+.alarmkeywordListElement {
+  margin: 5px;
+}

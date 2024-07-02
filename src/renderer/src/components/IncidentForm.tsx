@@ -1,5 +1,62 @@
 import { useState } from 'react'
+import AlarmkeywordSelect from './AlarmkeywordSelect'
 import styles from './IncidentForm.module.css'
+import { KeywordConfiguration } from '../types'
+
+const alarmkeywordConfiguration: Record<string, KeywordConfiguration> = {
+  'F1.': {
+    type: 'alarmkeyword',
+    units: ['c-di', 'hlf', 'dlk'],
+    openingKeyword: true,
+    presentation: 'F1.'
+  },
+  'F2.': {
+    type: 'alarmkeyword',
+    allowedAdditions: ['Wohn.', 'WohnY.', 'Keller.'],
+    units: ['c-di', 'hlf', 'hlf', 'dlk'],
+    openingKeyword: true,
+    presentation: 'F2.'
+  },
+  'F3.': {
+    type: 'alarmkeyword',
+    allowedAdditions: ['WohnY.'],
+    units: ['b-di', 'c-di', 'c-di', 'hlf', 'hlf', 'hlf', 'dlk', 'gw-mess', 'rtw'],
+    openingKeyword: false,
+    presentation: 'F3.'
+  },
+  'R2.': { type: 'alarmkeyword', units: ['rtw', 'nef'], openingKeyword: true, presentation: 'R2.' },
+  'R1.': { type: 'alarmkeyword', units: ['rtw'], openingKeyword: true, presentation: 'R1.' },
+  'Wohn.': {
+    type: 'addition',
+    units: ['gw-mess', 'rtw'],
+    openingKeyword: true,
+    presentation: 'F2.[Wohn.]'
+  },
+  'WohnY.': {
+    type: 'addition',
+    units: ['rtw', 'nef', 'olrd'],
+    openingKeyword: true,
+    presentation: 'F3.[WohnY.]'
+  },
+  'Keller.': {
+    type: 'addition',
+    units: ['gw-mess', 'ab-slm'],
+    openingKeyword: true,
+    presentation: 'F2.[Keller.]'
+  },
+  rtw: { type: 'module', units: ['rtw'], openingKeyword: true, presentation: 'RTW' },
+  hlf: { type: 'module', units: ['hlf'], openingKeyword: true, presentation: 'HLF' },
+  'gw-mess': { type: 'module', units: ['gw-mess'], openingKeyword: true, presentation: 'GW-Mess' },
+  'c-di': { type: 'module', units: ['c-di'], openingKeyword: true, presentation: 'C-Di' },
+  drohne: {
+    type: 'module',
+    units: ['gw-mess', 'c-di'],
+    openingKeyword: true,
+    presentation: 'Drohne'
+  },
+  's-rtw': { type: 'module', units: ['s-rtw'], openingKeyword: true, presentation: 'S-RTW' }
+  // Weitere Konfigurationsdaten hier hinzufügen...
+}
 
 function IncidentForm(): JSX.Element {
   const [activeNav, setActiveNav] = useState('incident')
@@ -129,6 +186,10 @@ function IncidentForm(): JSX.Element {
             d
           </label>
         </div>
+        <AlarmkeywordSelect
+          alarmkeywordConfiguration={alarmkeywordConfiguration}
+          isFollowUpAlarm={true}
+        />
       </div>
       <div
         className={
