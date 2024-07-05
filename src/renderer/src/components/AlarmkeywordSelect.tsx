@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import styles from './AlarmkeywordSelect.module.css'
 import { KeywordConfiguration } from '../types'
-import { decapitalizeStrings } from '../utils/decapitalizeStrings'
+import { capitalizeAndReplaceY } from '../utils/capitalizeAndReplaceY'
 
 type AlarmkeywordSelectProps = {
   alarmkeywordConfiguration: Record<string, KeywordConfiguration>
@@ -51,43 +51,47 @@ const resolveAlarmkeywordInput = (
   alarmkeywordConfiguration: Record<string, KeywordConfiguration>,
   isFollowUpAlarm: boolean
 ): string[][] => {
-  const returnedAlarmkeywords: string[][] = []
-  const alarmkeywordArray = decapitalizeStrings(Object.keys(alarmkeywordConfiguration))
+  const resolvedAlarmkeywords: string[][] = []
 
   if (alarmkeywordInput === '') {
     return []
   }
 
-  const matchingKeywords = alarmkeywordArray.filter((alarmkeyword) =>
+  const matchingKeywords = Object.keys(alarmkeywordConfiguration).filter((alarmkeyword) =>
     alarmkeyword.startsWith(alarmkeywordInput)
   )
 
   matchingKeywords.forEach((alarmkeyword) => {
-    // alarmkeyword = alarmkeyword.toUpperCase() ???
-    switch (alarmkeywordConfiguration[alarmkeyword.toUpperCase()].type) {
+    switch (alarmkeywordConfiguration[alarmkeyword].type) {
       case 'alarmkeyword':
-        returnedAlarmkeywords.push([
-          alarmkeyword,
-          alarmkeywordConfiguration[alarmkeyword.toUpperCase()].presentation
-        ])
-        if (alarmkeywordConfiguration[alarmkeyword.toUpperCase()].allowedAdditions) {
-          alarmkeywordConfiguration[alarmkeyword.toUpperCase()].allowedAdditions?.forEach(
-            (allowedAddition) => {
-              returnedAlarmkeywords.push([
-                `${alarmkeyword}[${allowedAddition}]`,
-                `${
-                  alarmkeywordConfiguration[alarmkeyword.toUpperCase()].presentation
-                } + ${allowedAddition} (${allowedAddition.slice(0, -1)})`
-              ])
-            }
-          )
+        resolvedAlarmkeywords.push([alarmkeyword, alarmkeyword.toUpperCase()])
+        if (alarmkeywordConfiguration[alarmkeyword].allowedAdditions) {
+          alarmkeywordConfiguration[alarmkeyword].allowedAdditions?.forEach((allowedAddition) => {
+            resolvedAlarmkeywords.push([
+              `${alarmkeyword}[${allowedAddition}]`,
+              `${alarmkeyword.toUpperCase()} + ${capitalizeAndReplaceY(
+                allowedAddition
+              )} (${capitalizeAndReplaceY(allowedAddition.slice(0, -1))})`
+            ])
+          })
         }
         break
 
       case 'addition':
-        returnedAlarmkeywords.push([
+        resolvedAlarmkeywords.push([
           alarmkeyword,
-          alarmkeywordConfiguration[alarmkeyword.toUpperCase()].presentation
+          `${alarmkeywordConfiguration[
+            alarmkeyword
+          ].category?.toUpperCase()} + ${capitalizeAndReplaceY(
+            alarmkeyword
+          )} (${capitalizeAndReplaceY(alarmkeyword.slice(0, -1))})`
+        ])
+        break
+
+      case 'module':
+        resolvedAlarmkeywords.push([
+          alarmkeyword,
+          alarmkeywordConfiguration[alarmkeyword].presentation!
         ])
         break
 
@@ -96,7 +100,7 @@ const resolveAlarmkeywordInput = (
     }
   })
 
-  return returnedAlarmkeywords
+  return resolvedAlarmkeywords
 
   // return alarmkeywordArray.filter((alarmkeyword) => alarmkeyword.startsWith(alarmkeywordInput))
 }
