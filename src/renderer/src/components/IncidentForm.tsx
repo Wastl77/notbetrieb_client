@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AlarmkeywordSelect from './AlarmkeywordSelect'
 import styles from './IncidentForm.module.css'
 import { alarmkeywordConfiguration } from '../assets/alarmkeywordConfiguration'
@@ -6,6 +6,7 @@ import { alarmkeywordConfiguration } from '../assets/alarmkeywordConfiguration'
 function IncidentForm(): JSX.Element {
   const [activeNav, setActiveNav] = useState('incident')
   const [formIsActive, setFormIsActive] = useState(false)
+  const [alarmkeyword, setAlarmkeyword] = useState('')
 
   const handleFormClick = (): void => {
     if (!formIsActive) {
@@ -20,6 +21,10 @@ function IncidentForm(): JSX.Element {
   const handleNavClick = (nav: string): void => {
     setActiveNav(nav)
   }
+
+  useEffect(() => {
+    console.log(alarmkeyword)
+  }, [alarmkeyword])
 
   return (
     <div
@@ -134,6 +139,8 @@ function IncidentForm(): JSX.Element {
         <AlarmkeywordSelect
           alarmkeywordConfiguration={alarmkeywordConfiguration}
           isFollowUpAlarm={true}
+          onChange={(alarmkeyword: string) => setAlarmkeyword(alarmkeyword)}
+          alarmkeyword={alarmkeyword}
         />
       </div>
       <div

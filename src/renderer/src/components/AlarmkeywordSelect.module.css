@@ -1,6 +1,6 @@
-.container {
+/* .container {
   position: relative;
-}
+} */
 
 .label {
   display: block;
@@ -9,12 +9,12 @@
 }
 
 .alarmkeywordList {
-  position: absolute;
+  /* position: absolute; */
   list-style: none;
   width: 100%;
   border: 1px solid #000000;
   border-radius: 5px;
-  top: calc(100% - 11px);
+  /* top: calc(100% - 11px); */
   display: none;
 }
 
@@ -22,6 +22,11 @@
   display: block;
 }
 
+.alarmkeywordListElement.highlighted {
+  background-color: #d31f1f;
+}
+
 .alarmkeywordListElement {
   margin: 5px;
+  cursor: pointer;
 }
